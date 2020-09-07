@@ -1,0 +1,42 @@
+Functions of the assembler being used by front-end code:
+
+assembly_init
+assembly_pass
+assembly_shutdown
+get_output_length
+read_from_output
+write_output_file
+show_display_data
+show_errors
+
+These are handled by far calling a thunk into the assembler.
+
+
+
+The following functions are called from within the 32-bit assembler:
+
+get_environment_variable
+
+malloc
+malloc_fixed
+malloc_growable
+mfree
+realloc
+get_timestamp
+
+open
+lseek
+read
+write
+close
+
+display_string
+display_error_string
+
+These functions are all located in 'system.inc' and are handled by far calling their 64-bit counterpart.
+
+
+
+Because the is 64-bit the lower bound on Windows API availablity is quite high compared to the 32-bit version.
+
+
