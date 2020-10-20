@@ -79,19 +79,19 @@ end macro
 macro struct? name
 	macro ends?!
 			end namespace
-		end struc
+		esc end struc
 		virtual at 0
 			name name
 			sizeof.name = $
 		end virtual
 		purge ends?
 	end macro
-	struc name
+	esc struc name
 		label . : sizeof.name
 		namespace .
 end macro
 
-calminstruction stdcall? proc*,args&
+calminstruction invoke? proc*,args&
 	local	tmp, stack
 	match	, args
 	jyes	call
@@ -105,7 +105,7 @@ calminstruction stdcall? proc*,args&
 	take	args, stack
 	jyes	push
     call:
-	arrange proc, =call proc
+	arrange proc, =call [proc]
 	assemble proc
 end calminstruction
 

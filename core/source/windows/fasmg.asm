@@ -19,6 +19,8 @@ include '../version.inc'
 
 section '.text' code executable
 
+  include 'system.inc'
+
   start:
 
 	call	system_init
@@ -35,7 +37,7 @@ section '.text' code executable
 	jnz	display_usage_information
 
 	xor	al,al
-	mov	ecx,[verbosity_level]
+	movzx	ecx,[verbosity_level]
 	jecxz	init
 	or	al,TRACE_ERROR_STACK
 	dec	ecx
@@ -44,7 +46,7 @@ section '.text' code executable
   init:
 	call	assembly_init
 
-	call	GetTickCount
+	invoke	GetTickCount
 	mov	[timer],eax
 
   assemble:
@@ -91,7 +93,7 @@ section '.text' code executable
       display_passes_suffix:
 	xor	ecx,ecx
 	call	display_string
-	call	GetTickCount
+	invoke	GetTickCount
 	sub	eax,[timer]
 	xor	edx,edx
 	add	eax,50
@@ -147,7 +149,7 @@ section '.text' code executable
 	call	assembly_shutdown
 	call	system_shutdown
 
-	stdcall ExitProcess,0
+	invoke	ExitProcess,0
 
   assembly_failed:
 
@@ -156,7 +158,7 @@ section '.text' code executable
 	call	assembly_shutdown
 	call	system_shutdown
 
-	stdcall ExitProcess,2
+	invoke	ExitProcess,2
 
   write_failed:
 	mov	ebx,_write_failed
@@ -181,7 +183,7 @@ section '.text' code executable
 	call	assembly_shutdown
 	call	system_shutdown
 
-	stdcall ExitProcess,3
+	invoke	ExitProcess,3
 
   display_usage_information:
 
@@ -191,7 +193,7 @@ section '.text' code executable
 
 	call	system_shutdown
 
-	stdcall ExitProcess,1
+	invoke	ExitProcess,1
 
   get_arguments:
 	xor	eax,eax
@@ -199,11 +201,11 @@ section '.text' code executable
 	mov	[source_path],eax
 	mov	[output_path],eax
 	mov	[no_logo],al
-	mov	[verbosity_level],eax
+	mov	[verbosity_level],al
 	mov	[maximum_number_of_passes],100
 	mov	[maximum_number_of_errors],1
 	mov	[maximum_depth_of_stack],10000
-	call	GetCommandLine
+	invoke	GetCommandLine
 	mov	esi,eax
 	mov	edi,eax
 	or	ecx,-1
@@ -303,7 +305,7 @@ section '.text' code executable
 	jc	error_in_arguments
 	cmp	edx,2
 	ja	error_in_arguments
-	mov	[verbosity_level],edx
+	mov	[verbosity_level],dl
 	jmp	find_next_argument
     set_errors_limit:
 	call	get_option_value
@@ -447,7 +449,29 @@ section '.text' code executable
   include '../output.inc'
   include '../console.inc'
 
-  include 'system.inc'
+section '.bss' readable writeable
+
+  include '../variables.inc'
+
+  source_path dd ?
+  output_path dd ?
+  maximum_number_of_passes dd ?
+
+  initial_commands dd ?
+  initial_commands_length dd ?
+  initial_commands_maximum_length dd ?
+
+  stdout dd ?
+  stderr dd ?
+  memory dd ?
+  timestamp dq ?
+  systemtime SYSTEMTIME
+  filetime FILETIME
+  systmp dd ?
+
+  timer dd ?
+  verbosity_level db ?
+  no_logo db ?
 
 section '.rdata' data readable
 
@@ -456,25 +480,25 @@ data import
 	library kernel32,'KERNEL32.DLL'
 
 	import kernel32,\
-	       __imp_CloseHandle,'CloseHandle',\
-	       __imp_CreateFile,'CreateFileA',\
-	       __imp_ExitProcess,'ExitProcess',\
-	       __imp_GetCommandLine,'GetCommandLineA',\
-	       __imp_GetEnvironmentVariable,'GetEnvironmentVariableA',\
-	       __imp_GetStdHandle,'GetStdHandle',\
-	       __imp_GetSystemTime,'GetSystemTime',\
-	       __imp_GetTickCount,'GetTickCount',\
-	       __imp_HeapAlloc,'HeapAlloc',\
-	       __imp_HeapCreate,'HeapCreate',\
-	       __imp_HeapDestroy,'HeapDestroy',\
-	       __imp_HeapFree,'HeapFree',\
-	       __imp_HeapReAlloc,'HeapReAlloc',\
-	       __imp_HeapSize,'HeapSize',\
-	       __imp_ReadFile,'ReadFile',\
-	       __imp_SetFilePointer,'SetFilePointer',\
-	       __imp_SystemTimeToFileTime,'SystemTimeToFileTime',\
-	       __imp_WriteFile,'WriteFile',\
-	       __imp_GetLastError,'GetLastError'
+	       CloseHandle,'CloseHandle',\
+	       CreateFile,'CreateFileA',\
+	       ExitProcess,'ExitProcess',\
+	       GetCommandLine,'GetCommandLineA',\
+	       GetEnvironmentVariable,'GetEnvironmentVariableA',\
+	       GetStdHandle,'GetStdHandle',\
+	       GetSystemTime,'GetSystemTime',\
+	       GetTickCount,'GetTickCount',\
+	       HeapAlloc,'HeapAlloc',\
+	       HeapCreate,'HeapCreate',\
+	       HeapDestroy,'HeapDestroy',\
+	       HeapFree,'HeapFree',\
+	       HeapReAlloc,'HeapReAlloc',\
+	       HeapSize,'HeapSize',\
+	       ReadFile,'ReadFile',\
+	       SetFilePointer,'SetFilePointer',\
+	       SystemTimeToFileTime,'SystemTimeToFileTime',\
+	       WriteFile,'WriteFile',\
+	       GetLastError,'GetLastError'
 
 end data
 
@@ -503,28 +527,3 @@ end data
 
   include '../tables.inc'
   include '../messages.inc'
-
-section '.bss' readable writeable
-
-  include '../variables.inc'
-
-  source_path dd ?
-  output_path dd ?
-  maximum_number_of_passes dd ?
-
-  initial_commands dd ?
-  initial_commands_length dd ?
-  initial_commands_maximum_length dd ?
-
-  stdout dd ?
-  stderr dd ?
-  memory dd ?
-  systmp dd ?
-  timestamp dq ?
-  systemtime SYSTEMTIME
-  filetime FILETIME
-
-  timer dd ?
-  verbosity_level dd ?
-  no_logo db ?
-

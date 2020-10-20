@@ -5,6 +5,7 @@ macro format?.PE? settings
 	PE.Settings.Characteristics = IMAGE_FILE_EXECUTABLE_IMAGE or IMAGE_FILE_32BIT_MACHINE or IMAGE_FILE_LINE_NUMS_STRIPPED or IMAGE_FILE_LOCAL_SYMS_STRIPPED
 	PE.Settings.DllCharacteristics = 0
 	PE.Settings.Stamp = +VERSION
+	PE.Settings.LegacyHeaders = 0
 	local seq
 	define seq settings:
 	while 1
@@ -79,19 +80,19 @@ end macro
 macro struct? name
 	macro ends?!
 			end namespace
-		end struc
+		esc end struc
 		virtual at 0
 			name name
 			sizeof.name = $
 		end virtual
 		purge ends?
 	end macro
-	struc name
+	esc struc name
 		label . : sizeof.name
 		namespace .
 end macro
 
-calminstruction stdcall? proc*,args&
+calminstruction invoke? proc*,args&
 	local	tmp, tmpst, stack
 	match	, args
 	jyes	call
@@ -118,7 +119,7 @@ calminstruction stdcall? proc*,args&
 	take	args, stack
 	jyes	push
     call:
-	arrange tmp, =call proc
+	arrange tmp, =call [proc]
 	assemble tmp
 end calminstruction
 
