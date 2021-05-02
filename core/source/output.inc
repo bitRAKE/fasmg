@@ -573,53 +573,70 @@ get_output_position:
 	retn
 
 create_output_path:
+mov edx,ecx
+xchg esi,ebx
 ; in:
-;  ebx - base path and name
-;  esi - file extension
-;  ecx = length of the extension
+;  esi - base path and name (cannot be zero length)
+;  ebx - file part to change
+;  edx = length of the part
 ; out:
 ;  edx - output path (generated in temporary storage)
-	push	ecx
-	mov	edi,ebx
-	xor	al,al
 	or	ecx,-1
-	repne	scasb
-	dec	edi
+	mov	edi,esi
+	xor	al,al
+	repnz	scasb
 	mov	ecx,edi
-    locate_extension:
-	cmp	edi,ebx
-	je	copy_path_name
+    locate_part:
 	dec	edi
+	cmp	edi,esi
+	jz	no_path
 	mov	al,[edi]
 	cmp	al,'\'
-	je	copy_path_name
+	jz	no_ext			; if extension mode, then base has no ext
 	cmp	al,'/'
-	je	copy_path_name
+	jz	no_ext			; if extension mode, then base has no ext
 	cmp	al,'.'
-	jne	locate_extension
+	jnz	locate_part
+
+	test	edx,edx			; null is ext prune mode
+	jz	truncate_base
+	cmp	[ebx],al		; if not looking for an ext
+	jz	truncate_base
+	jmp	locate_part		; keep looking
+    no_ext:
+	inc	edi
+    no_path:
+	test	edx,edx			; null is ext prune mode
+	jz	copy_base
+	cmp	byte [ebx],'.'
+	jz	copy_base
+
+	inc	ebx			; skip part slash
+    truncate_base:
+	inc	edi
 	mov	ecx,edi
-    copy_path_name:
-	sub	ecx,ebx
-	push	ecx
+    copy_base:
+	sub	ecx,esi
+
+	push	edx
 	mov	edi,[preprocessing_workspace.memory_start]
-	inc	ecx
 	mov	edx,preprocessing_workspace
+	push	ecx
 	call	reserve_workspace
 	pop	ecx
-	xchg	esi,ebx
+	dec	ecx
 	rep	movsb
+
+	pop	ecx
+	jecxz	part_attached
 	mov	esi,ebx
+	push	ecx
+	inc	ecx ; account for null byte (because EDI)
+	call	reserve_workspace ; EBX EDX ESI preserved
 	pop	ecx
-	mov	ebx,ecx
-	add	ecx,2
-	call	reserve_workspace
-	mov	ecx,ebx
-	jecxz	extension_attached
-	mov	al,'.'
-	stosb
 	rep	movsb
-    extension_attached:
-	xor	al,al
+    part_attached:
+	xchg	eax,ecx ; mov al,0
 	stosb
 	mov	edx,[preprocessing_workspace.memory_start]
 	retn

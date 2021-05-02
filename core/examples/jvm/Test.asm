@@ -6,7 +6,7 @@
 
 include 'jclass.inc'
 
-format binary as 'class'
+format binary as '.class'
 
   u4 0xcafebabe 		; magic
   u2 0,49			; minor and major version

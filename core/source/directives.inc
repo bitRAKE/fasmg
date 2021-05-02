@@ -4898,16 +4898,15 @@ format_binary:
     extension_stored:
 	mov	[output_extension],esi
     validate_extension:
-	mov	ebx,characters
-    scan_extension:
-	test	ecx,ecx
-	jz	extension_valid
+	jecxz	extension_valid
 	lodsb
-	xlatb
-	test	al,al
-	jz	invalid_argument
-	dec	ecx
-	jmp	scan_extension
+	cmp	al,'.'
+	jz	extension_valid
+	cmp	al,'/'
+	jz	extension_valid
+	cmp	al,'\'
+	jz	extension_valid
+	jmp	invalid_argument
     extension_valid:
 	mov	esi,edi
 	jmp	instruction_assembled

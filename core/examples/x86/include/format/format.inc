@@ -1,6 +1,6 @@
 
 macro format?.MZ?
-	format binary as 'exe'
+	format binary as '.exe'
 	include 'format/mz.inc'
 	include 'p6.inc'
 end macro
@@ -71,9 +71,9 @@ macro format?.PE? settings
 		end match
 	end while
 	if PE.Settings.Characteristics and IMAGE_FILE_DLL
-		format binary as 'dll'
+		format binary as '.dll'
 	else
-		format binary as 'exe'
+		format binary as '.exe'
 	end if
 	include 'format/pe.inc'
 	include 'p6.inc'
@@ -144,9 +144,9 @@ macro format?.PE64? settings
 		end match
 	end while
 	if PE.Settings.Characteristics and IMAGE_FILE_DLL
-		format binary as 'dll'
+		format binary as '.dll'
 	else
-		format binary as 'exe'
+		format binary as '.exe'
 	end if
 	include 'format/pe.inc'
 	include 'x64.inc'
@@ -155,7 +155,7 @@ end macro
 
 macro format?.ELF? variant
 	match , variant
-		format binary as 'o'
+		format binary as '.o'
 		include 'format/elf32.inc'
 		include 'p6.inc'
 		use32
@@ -191,7 +191,7 @@ end macro
 
 macro format?.ELF64? variant
 	match , variant
-		format binary as 'o'
+		format binary as '.o'
 		include 'format/elf64.inc'
 		include 'x64.inc'
 		use64
@@ -233,7 +233,7 @@ end macro
 
 macro format?.ELFx32? variant
 	match , variant
-		format binary as 'o'
+		format binary as '.o'
 		ELF.Settings.Machine = EM_X86_64
 		include 'format/elf32.inc'
 		include 'x64.inc'
@@ -259,7 +259,7 @@ macro format?.ELFx32? variant
 end macro
 
 macro format?.COFF?
-	format binary as 'obj'
+	format binary as '.obj'
 	include 'format/coff.inc'
 	include 'p6.inc'
 	use32
@@ -267,7 +267,7 @@ end macro
 
 macro format?.MS? variant
 	match =COFF?, variant
-		format binary as 'obj'
+		format binary as '.obj'
 		COFF.Settings.Characteristics = IMAGE_FILE_32BIT_MACHINE or IMAGE_FILE_LINE_NUMS_STRIPPED or IMAGE_FILE_BYTES_REVERSED_LO
 		include 'format/coffms.inc'
 		include 'p6.inc'
@@ -279,7 +279,7 @@ end macro
 
 macro format?.MS64? variant
 	match =COFF?, variant
-		format binary as 'obj'
+		format binary as '.obj'
 		COFF.Settings.Machine = IMAGE_FILE_MACHINE_AMD64
 		COFF.Settings.Characteristics = IMAGE_FILE_32BIT_MACHINE or IMAGE_FILE_LINE_NUMS_STRIPPED or IMAGE_FILE_BYTES_REVERSED_LO
 		include 'format/coffms.inc'
@@ -292,7 +292,7 @@ end macro
 
 macro format?.MachO? variant
 	match , variant
-		format binary as 'o'
+		format binary as '.o'
 		MachO.Settings.FileType equ MH_OBJECT
 		include 'format/macho.inc'
 		include 'p6.inc'
@@ -311,7 +311,7 @@ macro format?.MachO64? variant
 	MachO.Settings.ProcessorType equ CPU_TYPE_X86_64
 	MachO.Settings.ProcessorSubtype equ CPU_SUBTYPE_X86_64_ALL
 	match , variant
-		format binary as 'o'
+		format binary as '.o'
 		MachO.Settings.FileType equ MH_OBJECT
 		include 'format/macho.inc'
 		include 'x64.inc'

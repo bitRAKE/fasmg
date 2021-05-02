@@ -68,9 +68,9 @@ macro format?.PE? settings
 		end match
 	end while
 	if PE.Settings.Characteristics and IMAGE_FILE_DLL
-		format binary as 'dll'
+		format binary as '.dll'
 	else
-		format binary as 'exe'
+		format binary as '.exe'
 	end if
 	include '../../examples/x86/include/format/pe.inc'
 	use32

@@ -1,6 +1,6 @@
 
 define HEX
-format binary as 'hex'
+format binary as '.hex'
 
 virtual at 0
 	HEX.digits:: db '0123456789ABCDEF'

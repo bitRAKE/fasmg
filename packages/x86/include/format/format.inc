@@ -18,7 +18,7 @@ end macro
 local_include format?.include
 
 macro format?.MZ?
-	format binary as 'exe'
+	format binary as '.exe'
 	format?.include '../cpu/p6.inc'
 	format?.include 'mz.inc'
 end macro
@@ -90,11 +90,11 @@ macro format?.PE? settings
 		end match
 	end while
 	if PE.Settings.Subsystem = IMAGE_SUBSYSTEM_EFI_APPLICATION | PE.Settings.Subsystem = IMAGE_SUBSYSTEM_EFI_BOOT_SERVICE_DRIVER | PE.Settings.Subsystem = IMAGE_SUBSYSTEM_EFI_RUNTIME_DRIVER
-		format binary as 'efi'
+		format binary as '.efi'
 	else if PE.Settings.Characteristics and IMAGE_FILE_DLL
-		format binary as 'dll'
+		format binary as '.dll'
 	else
-		format binary as 'exe'
+		format binary as '.exe'
 	end if
 	format?.include 'pe.inc'
 	format?.include '../cpu/p6.inc'
@@ -166,11 +166,11 @@ macro format?.PE64? settings
 		end match
 	end while
 	if PE.Settings.Subsystem = IMAGE_SUBSYSTEM_EFI_APPLICATION | PE.Settings.Subsystem = IMAGE_SUBSYSTEM_EFI_BOOT_SERVICE_DRIVER | PE.Settings.Subsystem = IMAGE_SUBSYSTEM_EFI_RUNTIME_DRIVER
-		format binary as 'efi'
+		format binary as '.efi'
 	else if PE.Settings.Characteristics and IMAGE_FILE_DLL
-		format binary as 'dll'
+		format binary as '.dll'
 	else
-		format binary as 'exe'
+		format binary as '.exe'
 	end if
 	format?.include 'pe.inc'
 	format?.include '../cpu/x64.inc'
@@ -179,7 +179,7 @@ end macro
 
 macro format?.ELF? variant
 	match , variant
-		format binary as 'o'
+		format binary as '.o'
 		format?.include 'elf32.inc'
 		format?.include '../cpu/p6.inc'
 		use32
@@ -215,7 +215,7 @@ end macro
 
 macro format?.ELF64? variant
 	match , variant
-		format binary as 'o'
+		format binary as '.o'
 		format?.include 'elf64.inc'
 		format?.include '../cpu/x64.inc'
 		use64
@@ -257,7 +257,7 @@ end macro
 
 macro format?.ELFx32? variant
 	match , variant
-		format binary as 'o'
+		format binary as '.o'
 		ELF.Settings.Machine = EM_X86_64
 		format?.include 'elf32.inc'
 		format?.include '../cpu/x64.inc'
@@ -283,7 +283,7 @@ macro format?.ELFx32? variant
 end macro
 
 macro format?.COFF?
-	format binary as 'obj'
+	format binary as '.obj'
 	format?.include 'coff.inc'
 	format?.include '../cpu/p6.inc'
 	use32
@@ -291,7 +291,7 @@ end macro
 
 macro format?.MS? variant
 	match =COFF?, variant
-		format binary as 'obj'
+		format binary as '.obj'
 		COFF.Settings.Characteristics = IMAGE_FILE_32BIT_MACHINE or IMAGE_FILE_LINE_NUMS_STRIPPED or IMAGE_FILE_BYTES_REVERSED_LO
 		format?.include 'coffms.inc'
 		format?.include '../cpu/p6.inc'
@@ -303,7 +303,7 @@ end macro
 
 macro format?.MS64? variant
 	match =COFF?, variant
-		format binary as 'obj'
+		format binary as '.obj'
 		COFF.Settings.Machine = IMAGE_FILE_MACHINE_AMD64
 		COFF.Settings.Characteristics = IMAGE_FILE_32BIT_MACHINE or IMAGE_FILE_LINE_NUMS_STRIPPED or IMAGE_FILE_BYTES_REVERSED_LO
 		format?.include 'coffms.inc'
@@ -316,7 +316,7 @@ end macro
 
 macro format?.MachO? variant
 	match , variant
-		format binary as 'o'
+		format binary as '.o'
 		MachO.Settings.FileType equ MH_OBJECT
 		format?.include 'macho.inc'
 		format?.include '../cpu/p6.inc'
@@ -335,7 +335,7 @@ macro format?.MachO64? variant
 	MachO.Settings.ProcessorType equ CPU_TYPE_X86_64
 	MachO.Settings.ProcessorSubtype equ CPU_SUBTYPE_X86_64_ALL
 	match , variant
-		format binary as 'o'
+		format binary as '.o'
 		MachO.Settings.FileType equ MH_OBJECT
 		format?.include 'macho.inc'
 		format?.include '../cpu/x64.inc'
