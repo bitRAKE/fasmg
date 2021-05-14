@@ -1,18 +1,18 @@
 
 macro local_include? instr
-	local pos,chr,path 
-	pos = lengthof __FILE__ 
-	while pos 
-		chr = (__FILE__ shr (8*(pos-1))) and 0FFh 
-		if chr = '/' | chr = '\' 
-			break 
-		end if 
-		pos = pos - 1 
-	end while 
-	path = string __FILE__ and not ( (-1) shl (8*pos) ) 
-	macro instr file 
-		include string path + file shl (8*lengthof path) 
-	end macro 
+	local pos,chr,path
+	pos = lengthof __FILE__
+	while pos
+		chr = (__FILE__ shr (8*(pos-1))) and 0FFh
+		if chr = '/' | chr = '\'
+			break
+		end if
+		pos = pos - 1
+	end while
+	path = string __FILE__ and not ( (-1) shl (8*pos) )
+	macro instr file
+		include string path + file shl (8*lengthof path)
+	end macro
 end macro
 
 local_include format?.include
@@ -97,7 +97,9 @@ macro format?.PE? settings
 		format binary as '.exe'
 	end if
 	format?.include 'pe.inc'
-	format?.include '../cpu/p6.inc'
+;	format?.include '../cpu/p6.inc'
+;default to modern processors
+	format?.include '../cpu/x64.inc'
 	use32
 end macro
 

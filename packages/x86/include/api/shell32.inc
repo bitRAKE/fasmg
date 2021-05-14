@@ -4,6 +4,7 @@
 import shell32,\
        CheckEscapesA,'CheckEscapesA',\
        CheckEscapesW,'CheckEscapesW',\
+       CommandLineToArgvW,'CommandLineToArgvW',\
        DoEnvironmentSubstA,'DoEnvironmentSubstA',\
        DoEnvironmentSubstW,'DoEnvironmentSubstW',\
        DragAcceptFiles,'DragAcceptFiles',\

@@ -1,7 +1,7 @@
 
 include 'wasmcode.inc'
 
-format binary as 'wasm'
+format binary as '.wasm'
 
 define wasm
 
