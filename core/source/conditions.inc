@@ -297,7 +297,7 @@ evaluate_logical_value:
 	jmp	[comparator]
     evaluated_false:
 	pop	esi
-	xor	al,al
+	mov	al,0
 	retn
     evaluated_true:
 	pop	esi
