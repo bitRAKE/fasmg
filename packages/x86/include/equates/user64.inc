@@ -92,14 +92,13 @@ struct SCROLLINFO
 ends
 
 struct MSG
-  hwnd	  dq ?
-  message dd ?
-	  dd ?
-  wParam  dq ?
-  lParam  dq ?
-  time	  dd ?
-  pt	  POINT
-	  dd ?
+	hwnd	dq ?
+	message	dd ?,?
+	wParam	dq ?
+	lParam	dq ?
+	time	dd ?
+	pt	POINT
+		dd ?
 ends
 
 struct MINMAXINFO
